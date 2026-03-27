@@ -1,0 +1,10 @@
+.git
+*.md
+frontend/node_modules
+frontend/dist
+backend/target
+**/*.log
+**/*.txt
+.idea
+.vscode
+*.iml

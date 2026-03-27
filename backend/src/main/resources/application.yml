@@ -1,21 +1,23 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
     name: wallet-platform
-  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
   datasource:
     url: jdbc:h2:mem:walletdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
-  
+    password:
+
   h2:
     console:
       enabled: true
       path: /h2-console
-  
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -26,8 +28,8 @@ spring:
         format_sql: true
 
 jwt:
-  secret: VGhpc0lzQVZlcnlTZWN1cmVTZWNyZXRLZXlGb3JKV1RUb2tlbkdlbmVyYXRpb24xMjM0NTY3ODkw
-  expiration: 86400000  # 24 hours in milliseconds
+  secret: ${JWT_SECRET:VGhpc0lzQVZlcnlTZWN1cmVTZWNyZXRLZXlGb3JKV1RUb2tlbkdlbmVyYXRpb24xMjM0NTY3ODkw}
+  expiration: ${JWT_EXPIRATION:86400000}
 
 logging:
   level:
@@ -39,12 +41,16 @@ exchange-rate:
   api:
     url: https://api.exchangerate-api.com/v4/latest/USD
     enabled: true
-  refresh-interval-ms: 3600000  # 1 hour
+  refresh-interval-ms: 3600000 # 1 hour
 
 # Default Admin Account
 app:
   admin:
-    email: admin@walletplatform.com
-    password: Admin123!
+    email: ${ADMIN_EMAIL:admin@walletplatform.com}
+    password: ${ADMIN_PASSWORD:Admin123!}
     firstName: System
     lastName: Administrator
+
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
