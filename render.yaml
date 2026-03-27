@@ -50,9 +50,9 @@ services:
         value: "8080"
     healthCheckPath: /api/rates
 
+staticSites:
   # Frontend - React Static Site
-  - type: static
-    name: wallet-platform-frontend
+  - name: wallet-platform-frontend
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
