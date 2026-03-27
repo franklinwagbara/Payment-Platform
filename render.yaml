@@ -51,10 +51,8 @@ services:
     healthCheckPath: /api/rates
 
   # Frontend - React Static Site
-  - type: web
+  - type: static
     name: wallet-platform-frontend
-    runtime: static
-    plan: free
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
