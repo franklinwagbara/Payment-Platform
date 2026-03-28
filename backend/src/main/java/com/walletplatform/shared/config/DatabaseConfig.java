@@ -30,13 +30,26 @@ public class DatabaseConfig {
         System.out.println("SPRING_DATASOURCE_URL=" + maskPassword(System.getenv("SPRING_DATASOURCE_URL")));
         System.out.println("=== END DEBUG ===");
 
-        // Try DATABASE_URL first (standard Railway reference variable)
-        String databaseUrl = System.getenv("DATABASE_URL");
+        // Prefer DATABASE_PUBLIC_URL (avoids private networking DNS issues on Railway)
+        String databaseUrl = System.getenv("DATABASE_PUBLIC_URL");
         if (databaseUrl == null || databaseUrl.isEmpty()) {
-            databaseUrl = System.getenv("DATABASE_PUBLIC_URL");
+            databaseUrl = System.getenv("DATABASE_URL");
         }
         if (databaseUrl == null || databaseUrl.isEmpty()) {
             databaseUrl = System.getenv("DATABASE_PRIVATE_URL");
+        }
+
+        // If the URL uses a .internal hostname, it requires Railway private networking
+        // which may not resolve. Warn and check for public alternatives.
+        if (databaseUrl != null && databaseUrl.contains(".railway.internal")) {
+            System.out.println("WARNING: DATABASE_URL uses private hostname (.railway.internal)");
+            String publicUrl = System.getenv("DATABASE_PUBLIC_URL");
+            if (publicUrl != null && !publicUrl.isEmpty()) {
+                System.out.println("Switching to DATABASE_PUBLIC_URL to avoid DNS issues.");
+                databaseUrl = publicUrl;
+            } else {
+                System.out.println("No DATABASE_PUBLIC_URL available. Enable Public Networking on the Postgres service in Railway.");
+            }
         }
 
         HikariConfig config = new HikariConfig();
